@@ -7,3 +7,4 @@ node_modules/
 #custom
 playwright-report
 test-results
+screenshots/

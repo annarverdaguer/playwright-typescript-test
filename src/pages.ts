@@ -1,4 +1,6 @@
-import { Page, Locator } from '@playwright/test';
+import { Page } from '@playwright/test';
+import { locatorByRoleType, locatorByRoleAndTitleType } from './types';
+import { getLocatorByRole, getLocatorByRoleAndTitleFilter } from './tools';
 
 export class BrowserPage {
     constructor(private page: Page, private readonly baseUrl: string) {
@@ -8,15 +10,15 @@ export class BrowserPage {
         await this.page.goto(this.baseUrl);
     }
 
-    async clickOn(element: Locator) {
-        await element.click()
+    async clickOn(element: locatorByRoleType) {
+        await getLocatorByRole(this.page, element).click()
     }
 
-    async fillIn(element: Locator, text: string) {
-        await element.fill(text)
+    async fillIn(element: locatorByRoleType, text: string) {
+        await getLocatorByRole(this.page, element).fill(text)
     }
 
-    async getText(element: Locator): Promise<string | null> {
-        return await element.textContent()
+    async getText(element: locatorByRoleAndTitleType): Promise<string | null> {
+        return await getLocatorByRoleAndTitleFilter(this.page, element).textContent()
     }
 }

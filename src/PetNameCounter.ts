@@ -6,9 +6,9 @@ export class PetNameCounter {
     ) { }
 
     public listNameFrecuency() {
-        let nameCounter = new Map<string, number>();
+        const nameCounter = new Map<string, number>();
         this.pets.forEach(soldPet => {
-            let currentNameOcurrences = nameCounter.get(soldPet.name) || 0;
+            const currentNameOcurrences = nameCounter.get(soldPet.name) || 0;
             nameCounter.set(soldPet.name, currentNameOcurrences + 1)
         });
         return nameCounter;

@@ -1,4 +1,13 @@
-import { soldPetsListType } from "./types";
+import { Locator, Page } from "@playwright/test";
+import { locatorByRoleType, locatorByRoleAndTitleType, soldPetsListType } from "./types";
+
+export function getLocatorByRole(page: Page, locator: locatorByRoleType): Locator {
+    return page.getByRole(locator.role as any, { name: locator.name }).first();
+}
+
+export function getLocatorByRoleAndTitleFilter(page: Page, locator: locatorByRoleAndTitleType): Locator {
+    return page.getByRole(locator.role as any).filter({ has: page.getByTitle(locator.title) });
+}
 
 export function getYearFromText(text: string): string | null {
     const yearMatches = text.match(/\b\d{4}\b/g);

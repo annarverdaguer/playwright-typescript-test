@@ -1,30 +1,29 @@
 import { test, expect } from '@playwright/test';
 import { BrowserPage } from '../src/pages';
 import { getYearFromText } from '../src/tools';
+import { googleLocators, wikipediaLocators } from '../src/locators';
+
+const googleBaseURL = 'https://google.com'
+const wikipediaBaseURL = 'https://en.wikipedia.org'
 
 test('[1st Exercise] Retrieve the year of the first automation process ', async ({ page }) => {
-  const google = new BrowserPage(page, 'https://google.com');
+  const google = new BrowserPage(page, googleBaseURL);
   await google.open();
+  await google.clickOn(googleLocators.cookiesAcceptButton);
 
-  const googleCookiesAccept = page.getByRole('button', { name: 'Aceptar todo' });
-  await google.clickOn(googleCookiesAccept);
+  await google.clickOn(googleLocators.searchBox);
+  await google.fillIn(googleLocators.searchBox, 'automation');
+  await google.clickOn(googleLocators.searchButton);
+  expect(page.url().startsWith(`${googleBaseURL}/search?`)).toBe(true)
 
-  const googleSearchBox = page.getByRole('combobox', { name: 'Buscar' });
-  await google.clickOn(googleSearchBox);
-  await google.fillIn(googleSearchBox, 'automation');
+  google.clickOn(googleLocators.wikipediaLink);
+  expect(page.url()).toBe(`${wikipediaBaseURL}/wiki/Automation`)
 
-  const googleSearchButton = page.getByRole('button', { name: 'Buscar con Google' }).first();
-  await google.clickOn(googleSearchButton);
-  expect(page.url().startsWith('https://www.google.com/search?')).toBe(true)
-
-  const googleResultsWikipedia = page.getByRole('link', { name: 'Automation - Wikipedia' });
-  google.clickOn(googleResultsWikipedia);
-  expect(page.url()).toBe('https://en.wikipedia.org/wiki/Automation')
-
-  const wiki = new BrowserPage(page, 'https://en.wikipedia.org/wiki/Automation')
-  const firstAutomatedProcess = page.getByRole('paragraph').filter({ has: page.getByTitle('Oliver Evans') });
-  const firstAutomatedProcessText = await wiki.getText(firstAutomatedProcess) ?? '';
-  const year = getYearFromText(firstAutomatedProcessText);
+  const wiki = new BrowserPage(page, `${wikipediaBaseURL}/wiki/Automation`)
+  const paragraphText = await wiki.getText(wikipediaLocators.firstAutomatedProcessParagraph) ?? '';
+  const year = getYearFromText(paragraphText);
   console.log(`The year of the first fully automated industrial process was on ${year}`)
   expect(year).toBe('1785');
+
+  await page.screenshot({ path: 'screenshots/wikipediaScreenshot.png', fullPage: true });
 });
