@@ -1,0 +1,1 @@
+export type soldPetsListType = { id: number, name: string }[]
